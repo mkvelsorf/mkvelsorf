@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MK Velsorf</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    background: #fff;
+    color: #000;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.35;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: 100vh;
+  }
+  .sidebar {
+    position: fixed;
+    width: 260px;
+    height: 100vh;
+    padding: 36px 28px;
+  }
+  .name {
+    font-size: 18px;
+    margin: 0 0 32px;
+  }
+  nav {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  nav button {
+    appearance: none;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    background: none;
+    color: #000;
+    font: inherit;
+    cursor: pointer;
+    text-align: left;
+  }
+  nav button:hover,
+  nav button.active {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  main {
+    grid-column: 2;
+    padding: 36px 48px 64px 20px;
+    max-width: 1100px;
+  }
+  #content {
+    min-height: calc(100vh - 100px);
+  }
+  .intro {
+    display: none;
+  }
+  .item {
+    margin: 0 0 40px;
+    max-width: 900px;
+  }
+  .item:last-child { margin-bottom: 0; }
+  .player {
+    width: 100%;
+    border: 0;
+    display: block;
+    background: #fff;
+  }
+  .bandcamp { height: 470px; }
+  .soundcloud { height: 166px; }
+  .vimeo {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    height: auto;
+  }
+  .text-panel {
+    max-width: 620px;
+  }
+  .contact a {
+    color: #000;
+    text-decoration: none;
+  }
+  .contact a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (max-width: 700px) {
+    .layout { display: block; }
+    .sidebar {
+      position: relative;
+      width: 100%;
+      height: auto;
+      padding: 24px 20px 10px;
+    }
+    .name { margin-bottom: 22px; }
+    nav {
+      gap: 7px 18px;
+      flex-wrap: wrap;
+    }
+    main {
+      padding: 28px 20px 48px;
+      max-width: none;
+    }
+    #content { min-height: 0; }
+    .item { margin-bottom: 28px; }
+    .bandcamp { height: 470px; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="name">MK Velsorf</div>
+    <nav aria-label="Main navigation">
+      <button data-section="albums">Album releases</button>
+      <button data-section="film">Film scores</button>
+      <button data-section="theater">Theater scores</button>
+      <button data-section="installation">Art installation scores</button>
+      <button data-section="about">About</button>
+      <button data-section="contact">Contact</button>
+    </nav>
+  </aside>
+
+  <main>
+    <div id="content">
+      <div class="intro"></div>
+    </div>
+  </main>
+</div>
+
+<script>
+const sections = {
+  albums: `
+    <div class="item">
+      <iframe class="player bandcamp"
+        src="https://tlftrio.bandcamp.com/EmbeddedPlayer/album=desire/size=large/bgcol=ffffff/linkcol=111111/transparent=true/"
+        seamless></iframe>
+    </div>
+    <div class="item">
+      <iframe class="player bandcamp"
+        src="https://tlftrio.bandcamp.com/EmbeddedPlayer/album=sweet-harmony/size=large/bgcol=ffffff/linkcol=111111/transparent=true/"
+        seamless></iframe>
+    </div>
+    <div class="item">
+      <iframe class="player bandcamp"
+        src="https://a-we.bandcamp.com/EmbeddedPlayer/album=opening-night/size=large/bgcol=ffffff/linkcol=111111/transparent=true/"
+        seamless></iframe>
+    </div>
+  `,
+  film: `
+    <div class="item">
+      <iframe class="player vimeo" src="https://vimeo.com/showcase/11907910/embed" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <div class="item">
+      <iframe class="player vimeo" src="https://vimeo.com/showcase/10007339/embed" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+    </div>
+  `,
+  theater: `
+    <div class="item">
+      <iframe class="player soundcloud"
+        src="https://w.soundcloud.com/player/?url=https%3A//on.soundcloud.com/MidQiiV51bMaFsPFdZ&color=%23111111&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&visual=false"
+        allow="autoplay"></iframe>
+    </div>
+    <div class="item" data-source="https://vimeo.com/newtheaterhollywood/theendisnew" data-password="pooltheater5">
+      <iframe class="player vimeo" src="https://player.vimeo.com/video/REPLACE_THE_END_IS_NEW_ID" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+    </div>
+  `,
+  installation: `
+    <div class="item">
+      <iframe class="player soundcloud"
+        src="https://w.soundcloud.com/player/?url=https%3A//on.soundcloud.com/GghKXUt4InBLkfU4ud&color=%23111111&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&visual=false"
+        allow="autoplay"></iframe>
+    </div>
+    <div class="item">
+      <iframe class="player soundcloud"
+        src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/mkfroslev/4kanals-komposition-for/s-gFd0FW6Yoej%3Fsi%3D9772d8b784d840b180a310a1c2464101&color=%23111111&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&visual=false"
+        allow="autoplay"></iframe>
+    </div>
+  `,
+  about: `
+    <div class="text-panel">
+      MK Velsorf (b. 1991) is a guitarist and composer based in Los Angeles.
+      He is educated from Malmö Art Academy, The Cooper Union School of Art,
+      New York City, and California Institute of the Arts School of Music.
+      He is the music director at New Theater Hollywood.
+    </div>
+  `,
+  contact: `
+    <div class="text-panel contact">
+      <a href="mailto:mk@newtheaterhollywood.com">mk@newtheaterhollywood.com</a>
+    </div>
+  `
+};
+
+const content = document.getElementById('content');
+document.querySelectorAll('nav button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    content.innerHTML = sections[btn.dataset.section];
+  });
+});
+</script>
+</body>
+</html>
