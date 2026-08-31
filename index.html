@@ -224,29 +224,34 @@
 </head>
 
 <body>
+
   <div class="layout">
+
     <aside class="sidebar">
       <div class="name">MK Velsorf</div>
 
-```
-  <nav>
-    <button data-s="albums">Album releases</button>
-    <button data-s="film">Film scores</button>
-    <button data-s="theater">Theater scores</button>
-    <button data-s="install">Art installation scores</button>
-    <button data-s="about">About</button>
-    <button data-s="contact">Contact</button>
-  </nav>
-</aside>
+      <nav>
+        <button data-s="albums">Album releases</button>
+        <button data-s="film">Film scores</button>
+        <button data-s="theater">Theater scores</button>
+        <button data-s="install">Art installation scores</button>
+        <button data-s="about">About</button>
+        <button data-s="contact">Contact</button>
+      </nav>
+    </aside>
 
-<main>
-  <div id="content"></div>
-</main>
-```
+    <main>
+      <div id="content"></div>
+    </main>
 
   </div>
 
   <script>
+
+    /* =========================
+       VIMEO PLAYERS
+       ========================= */
+
     const vimeo = id => `
       <div class="vimeo">
         <iframe
@@ -260,12 +265,17 @@
     const vimeoLandscape = id => `
       <div class="vimeo landscape">
         <iframe
-          src="https://player.vimeo.com/video/${id}?badge=0&autopause=0&player_id=0&app_id=58479"
+          src="https://player.vimeo.com/video/${id}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479"
           allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
           allowfullscreen>
         </iframe>
       </div>
     `;
+
+
+    /* =========================
+       SOUNDCLOUD
+       ========================= */
 
     const soundcloud = (url, cls) => `
       <iframe
@@ -277,13 +287,24 @@
       </iframe>
     `;
 
+
+    /* =========================
+       PASSWORDS
+       ========================= */
+
     const passwords = {
       theater: "nth2025",
       paradise: "chmparadise22#ep",
       endisnew: "pooltheater5"
     };
 
+
+    /* =========================
+       PASSWORD GATE
+       ========================= */
+
     const gate = (key, playerHtml) => {
+
       if (sessionStorage.getItem("mkvelsorf-" + key) === "ok") {
         return playerHtml;
       }
@@ -295,14 +316,21 @@
               type="password"
               placeholder="Password"
               aria-label="Password"
+              autocomplete="off"
               required
             >
             <button type="submit">Enter</button>
           </form>
+
           <div class="gate-error" aria-live="polite"></div>
         </div>
       `;
     };
+
+
+    /* =========================
+       VIDEO COLLECTIONS
+       ========================= */
 
     const theaterVideos = [
       "1123734833",
@@ -312,6 +340,7 @@
       "1123079519"
     ].map(vimeo).join("");
 
+
     const paradiseVideos = [
       "775045266",
       "775050707",
@@ -319,9 +348,18 @@
       "775063902"
     ].map(vimeo).join("");
 
+
+    /* =========================
+       SECTIONS
+       ========================= */
+
     const sections = {
+
+      /* ---------- ALBUMS ---------- */
+
       albums: () => `
         <div class="album-grid">
+
           <div class="item">
             <iframe
               style="border:0;width:350px;height:786px;"
@@ -345,8 +383,12 @@
               seamless>
             </iframe>
           </div>
+
         </div>
       `,
+
+
+      /* ---------- FILM ---------- */
 
       film: () => `
         <div class="film-title">
@@ -354,7 +396,10 @@
         </div>
 
         ${gate("theater", theaterVideos)}
-        <div class="film-password">pw: nth2025</div>
+
+        <div class="film-password">
+          pw: nth2025
+        </div>
 
         <div class="film-gap"></div>
 
@@ -363,8 +408,14 @@
         </div>
 
         ${gate("paradise", paradiseVideos)}
-        <div class="film-password">pw: chmparadise22#ep</div>
+
+        <div class="film-password">
+          pw: chmparadise22#ep
+        </div>
       `,
+
+
+      /* ---------- THEATER ---------- */
 
       theater: () => `
         <div class="theater-credit">
@@ -385,8 +436,14 @@
         </div>
 
         ${gate("endisnew", vimeoLandscape("1151391936"))}
-        <div class="film-password">pw: pooltheater5</div>
+
+        <div class="film-password">
+          pw: pooltheater5
+        </div>
       `,
+
+
+      /* ---------- INSTALLATIONS ---------- */
 
       install: () => `
         <div class="theater-credit">
@@ -412,6 +469,9 @@
         </div>
       `,
 
+
+      /* ---------- ABOUT ---------- */
+
       about: () => `
         <div class="text">
           MK Velsorf (b. 1991) is a guitarist and composer based in Los Angeles.
@@ -421,8 +481,12 @@
         </div>
       `,
 
+
+      /* ---------- CONTACT ---------- */
+
       contact: () => `
         <div class="text contact">
+
           <div class="contact-line">
             <a href="mailto:mk@newtheaterhollywood.com">
               mk@newtheaterhollywood.com
@@ -437,55 +501,103 @@
               @mkvelsorf
             </a>
           </div>
+
         </div>
       `
     };
 
+
+    /* =========================
+       RENDERING
+       ========================= */
+
     const content = document.getElementById("content");
 
+
     function renderSection(name) {
+
       content.innerHTML = sections[name]();
+
       bindGates();
     }
 
+
+    /* =========================
+       PASSWORD FORM HANDLING
+       ========================= */
+
     function bindGates() {
+
       content.querySelectorAll(".film-gate form").forEach(form => {
+
         form.addEventListener("submit", event => {
+
           event.preventDefault();
 
           const gateEl = form.closest(".film-gate");
           const key = gateEl.dataset.gate;
+
           const input = form.querySelector("input");
           const error = gateEl.querySelector(".gate-error");
 
-          if (input.value.trim() === passwords[key]) {
-            sessionStorage.setItem("mkvelsorf-" + key, "ok");
+          const enteredPassword = input.value.trim();
+
+          if (enteredPassword === passwords[key]) {
+
+            sessionStorage.setItem(
+              "mkvelsorf-" + key,
+              "ok"
+            );
 
             const activeButton = document.querySelector(
               "nav button.active"
             );
 
             if (activeButton) {
-              renderSection(activeButton.dataset.s);
+
+              renderSection(
+                activeButton.dataset.s
+              );
+
             }
+
           } else {
+
             error.textContent = "Incorrect password";
+
             input.select();
+
           }
+
         });
+
       });
+
     }
 
+
+    /* =========================
+       NAVIGATION
+       ========================= */
+
     document.querySelectorAll("nav button").forEach(button => {
+
       button.addEventListener("click", () => {
+
         document.querySelectorAll("nav button").forEach(b => {
           b.classList.remove("active");
         });
 
         button.classList.add("active");
-        renderSection(button.dataset.s);
+
+        renderSection(
+          button.dataset.s
+        );
+
       });
+
     });
+
   </script>
 
 </body>
