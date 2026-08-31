@@ -228,29 +228,31 @@
       <div class="name">MK Velsorf</div>
 
       <nav>
+
         <button type="button" data-section="albums">
-          Album releases
+          album releases
         </button>
 
         <button type="button" data-section="film">
-          Film scores
+          film scores
         </button>
 
         <button type="button" data-section="theater">
-          Theater scores
+          theater scores
         </button>
 
         <button type="button" data-section="install">
-          Art installation scores
+          art installation scores
         </button>
 
         <button type="button" data-section="about">
-          About
+          about
         </button>
 
         <button type="button" data-section="contact">
-          Contact
+          contact
         </button>
+
       </nav>
 
     </aside>
@@ -264,10 +266,6 @@
 
 
   <script>
-
-    /* ============================
-       VIMEO
-       ============================ */
 
     function vimeo(id) {
       return `
@@ -295,10 +293,6 @@
     }
 
 
-    /* ============================
-       SOUNDCLOUD
-       ============================ */
-
     function soundcloud(url, cls) {
       return `
         <iframe
@@ -312,20 +306,12 @@
     }
 
 
-    /* ============================
-       PASSWORDS
-       ============================ */
-
     const passwords = {
       theater: "nth2025",
       paradise: "chmparadise22#ep",
       endisnew: "pooltheater5"
     };
 
-
-    /* ============================
-       PASSWORD LABEL
-       ============================ */
 
     function passwordLabel(key) {
       return `
@@ -335,10 +321,6 @@
       `;
     }
 
-
-    /* ============================
-       PASSWORD GATE
-       ============================ */
 
     function gate(key, videos) {
 
@@ -378,10 +360,6 @@
     }
 
 
-    /* ============================
-       THEATER FILM VIDEOS
-       ============================ */
-
     const theaterVideos = [
       "1123734833",
       "1123735765",
@@ -398,10 +376,6 @@
     }).join("");
 
 
-    /* ============================
-       PARADISE FILM VIDEOS
-       ============================ */
-
     const paradiseVideos = [
       "775045266",
       "775050707",
@@ -417,14 +391,8 @@
     }).join("");
 
 
-    /* ============================
-       SECTIONS
-       ============================ */
-
     const sections = {
 
-
-      /* ALBUMS */
 
       albums: function() {
 
@@ -469,8 +437,6 @@
       },
 
 
-      /* FILM SCORES */
-
       film: function() {
 
         return `
@@ -495,8 +461,6 @@
 
       },
 
-
-      /* THEATER SCORES */
 
       theater: function() {
 
@@ -536,8 +500,6 @@
       },
 
 
-      /* ART INSTALLATIONS */
-
       install: function() {
 
         return `
@@ -576,8 +538,6 @@
       },
 
 
-      /* ABOUT */
-
       about: function() {
 
         return `
@@ -595,8 +555,6 @@
 
       },
 
-
-      /* CONTACT */
 
       contact: function() {
 
@@ -635,10 +593,6 @@
     };
 
 
-    /* ============================
-       CONTENT
-       ============================ */
-
     const content =
       document.getElementById("content");
 
@@ -652,10 +606,6 @@
 
     }
 
-
-    /* ============================
-       PASSWORD FORMS
-       ============================ */
 
     function bindPasswordForms() {
 
@@ -734,10 +684,6 @@
     }
 
 
-    /* ============================
-       MENU
-       ============================ */
-
     document
       .querySelectorAll("nav button")
       .forEach(function(button) {
@@ -769,15 +715,6 @@
 
       });
 
-
-    /*
-      IMPORTANT:
-
-      Nothing is rendered automatically.
-
-      The landing page is intentionally
-      blank on the right side.
-    */
 
   </script>
 
