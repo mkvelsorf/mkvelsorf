@@ -124,6 +124,7 @@
     }
 
     .film-title,
+    .film-password,
     .theater-credit {
       font-size: 16px;
       margin: 0 0 16px;
@@ -139,7 +140,7 @@
 
     .film-gate {
       max-width: 900px;
-      margin: 0 0 40px;
+      margin: 0 0 16px;
     }
 
     .film-gate form {
@@ -181,6 +182,10 @@
     .contact a:hover {
       text-decoration: underline;
       text-underline-offset: 3px;
+    }
+
+    .contact-line {
+      margin: 0 0 8px;
     }
 
     @media (max-width: 700px) {
@@ -349,6 +354,7 @@
         </div>
 
         ${gate("theater", theaterVideos)}
+        <div class="film-password">pw: nth2025</div>
 
         <div class="film-gap"></div>
 
@@ -357,6 +363,7 @@
         </div>
 
         ${gate("paradise", paradiseVideos)}
+        <div class="film-password">pw: chmparadise22#ep</div>
       `,
 
       theater: () => `
@@ -378,6 +385,7 @@
         </div>
 
         ${gate("endisnew", vimeoLandscape("1151391936"))}
+        <div class="film-password">pw: pooltheater5</div>
       `,
 
       install: () => `
@@ -415,9 +423,20 @@
 
       contact: () => `
         <div class="text contact">
-          <a href="mailto:mk@newtheaterhollywood.com">
-            mk@newtheaterhollywood.com
-          </a>
+          <div class="contact-line">
+            <a href="mailto:mk@newtheaterhollywood.com">
+              mk@newtheaterhollywood.com
+            </a>
+          </div>
+
+          <div class="contact-line">
+            <a
+              href="https://www.instagram.com/mkvelsorf/?hl=en"
+              target="_blank"
+              rel="noopener noreferrer">
+              @mkvelsorf
+            </a>
+          </div>
         </div>
       `
     };
@@ -439,7 +458,7 @@
           const input = form.querySelector("input");
           const error = gateEl.querySelector(".gate-error");
 
-          if (input.value === passwords[key]) {
+          if (input.value.trim() === passwords[key]) {
             sessionStorage.setItem("mkvelsorf-" + key, "ok");
 
             const activeButton = document.querySelector(
