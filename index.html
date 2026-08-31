@@ -166,38 +166,6 @@
       height: 5cm;
     }
 
-    .film-gate {
-      max-width: 900px;
-      margin: 0 0 16px;
-    }
-
-    .film-gate form {
-      display: flex;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .film-gate input {
-      font: inherit;
-      border: 1px solid #000;
-      padding: 4px 6px;
-      background: #fff;
-      color: #000;
-    }
-
-    .film-gate button {
-      font: inherit;
-      border: 0;
-      background: #000;
-      color: #fff;
-      padding: 5px 9px;
-      cursor: pointer;
-    }
-
-    .gate-error {
-      margin-top: 8px;
-    }
-
     .text {
       max-width: 620px;
     }
@@ -217,6 +185,7 @@
     }
 
     @media (max-width: 700px) {
+
       .layout {
         display: block;
       }
@@ -254,6 +223,7 @@
         flex-direction: column;
         gap: 28px;
       }
+
     }
   </style>
 </head>
@@ -479,61 +449,12 @@
     };
 
 
-    /* ---------------------------------
-       PASSWORD GATE
-    --------------------------------- */
-
-    function gate(key, videos) {
-
-      /*
-        One successful password entry unlocks
-        the entire collection.
-
-        localStorage keeps the unlock after
-        refreshing or reopening the browser.
-      */
-
-      if (
-        localStorage.getItem(
-          "mkvelsorf-" + key
-        ) === "ok"
-      ) {
-
-        return videos;
-
-      }
-
+    function passwordLabel(key) {
 
       return `
-        <div
-          class="film-gate"
-          data-gate="${key}">
+        <div class="film-password">
 
-          <form>
-
-            <input
-              type="password"
-              placeholder="Password"
-              aria-label="Password"
-              autocomplete="off"
-              required>
-
-            <button type="submit">
-              Enter
-            </button>
-
-          </form>
-
-          <div class="film-password">
-
-            pw: ${passwords[key]}
-
-          </div>
-
-          <div
-            class="gate-error"
-            aria-live="polite">
-          </div>
+          pw: ${passwords[key]}
 
         </div>
       `;
@@ -543,7 +464,6 @@
 
     /* ---------------------------------
        THEATER VIDEOS
-       ONE PASSWORD UNLOCKS ALL FIVE
     --------------------------------- */
 
     const theaterVideos = [
@@ -556,14 +476,16 @@
 
     ].map(function(id) {
 
-      return vimeo(id);
+      return (
+        vimeo(id) +
+        passwordLabel("theater")
+      );
 
     }).join("");
 
 
     /* ---------------------------------
        PARADISE VIDEOS
-       ONE PASSWORD UNLOCKS ALL FOUR
     --------------------------------- */
 
     const paradiseVideos = [
@@ -575,7 +497,10 @@
 
     ].map(function(id) {
 
-      return vimeo(id);
+      return (
+        vimeo(id) +
+        passwordLabel("paradise")
+      );
 
     }).join("");
 
@@ -606,6 +531,7 @@
 
             </div>
 
+
             <div class="item">
 
               <iframe
@@ -615,6 +541,7 @@
               </iframe>
 
             </div>
+
 
             <div class="item">
 
@@ -647,10 +574,7 @@
 
           </div>
 
-          ${gate(
-            "theater",
-            theaterVideos
-          )}
+          ${theaterVideos}
 
           <div class="film-gap"></div>
 
@@ -660,10 +584,7 @@
 
           </div>
 
-          ${gate(
-            "paradise",
-            paradiseVideos
-          )}
+          ${paradiseVideos}
 
         `;
 
@@ -706,10 +627,13 @@
 
           </div>
 
-          ${gate(
-            "endisnew",
-            vimeoLandscape("1151391936")
-          )}
+          <div class="item">
+
+            ${vimeoLandscape("1151391936")}
+
+            ${passwordLabel("endisnew")}
+
+          </div>
 
         `;
 
@@ -780,15 +704,11 @@
     function renderSection(sectionName) {
 
       if (!sections[sectionName]) {
-
         return;
-
       }
 
       content.innerHTML =
         sections[sectionName]();
-
-      bindPasswordForms();
 
     }
 
@@ -840,104 +760,6 @@
           );
 
         });
-
-    }
-
-
-    /* ---------------------------------
-       PASSWORD FORMS
-    --------------------------------- */
-
-    function bindPasswordForms() {
-
-      const forms =
-        content.querySelectorAll(
-          ".film-gate form"
-        );
-
-
-      forms.forEach(function(form) {
-
-        form.addEventListener(
-          "submit",
-          function(event) {
-
-            event.preventDefault();
-
-
-            const gateElement =
-              form.closest(".film-gate");
-
-
-            const key =
-              gateElement.dataset.gate;
-
-
-            const input =
-              form.querySelector("input");
-
-
-            const error =
-              gateElement.querySelector(
-                ".gate-error"
-              );
-
-
-            /*
-              Check the password.
-            */
-
-            if (
-              input.value ===
-              passwords[key]
-            ) {
-
-              /*
-                Store the unlock.
-
-                THEATER = all five videos
-                PARADISE = all four videos
-                END IS NEW = its video
-              */
-
-              localStorage.setItem(
-                "mkvelsorf-" + key,
-                "ok"
-              );
-
-
-              /*
-                Re-render the current section.
-                The gate will now be gone.
-              */
-
-              const activeButton =
-                document.querySelector(
-                  "nav button.active"
-                );
-
-
-              if (activeButton) {
-
-                renderSection(
-                  activeButton.dataset.section
-                );
-
-              }
-
-            } else {
-
-              error.textContent =
-                "Incorrect password";
-
-              input.select();
-
-            }
-
-          }
-        );
-
-      });
 
     }
 
@@ -1077,6 +899,11 @@
       }
 
     );
+
+
+    /*
+      Page starts with only the menu.
+    */
 
   </script>
 
