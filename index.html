@@ -29,6 +29,8 @@
 
     .sidebar {
       position: fixed;
+      left: 0;
+      top: 0;
       width: 260px;
       height: 100vh;
       padding: 36px 28px;
@@ -46,10 +48,10 @@
       gap: 8px;
     }
 
-    button {
+    nav button {
       appearance: none;
       border: 0;
-      background: none;
+      background: transparent;
       color: #000;
       padding: 0;
       margin: 0;
@@ -58,8 +60,8 @@
       text-align: left;
     }
 
-    button:hover,
-    button.active {
+    nav button:hover,
+    nav button.active {
       text-decoration: underline;
       text-underline-offset: 3px;
     }
@@ -74,10 +76,6 @@
       width: 100%;
       max-width: 900px;
       margin: 0 0 40px;
-    }
-
-    .item:last-child {
-      margin-bottom: 0;
     }
 
     iframe {
@@ -225,21 +223,24 @@
 
   <div class="layout">
 
+    <!-- LEFT MENU -->
     <aside class="sidebar">
 
       <div class="name">MK Velsorf</div>
 
       <nav>
-        <button data-s="albums">Album releases</button>
-        <button data-s="film">Film scores</button>
-        <button data-s="theater">Theater scores</button>
-        <button data-s="install">Art installation scores</button>
-        <button data-s="about">About</button>
-        <button data-s="contact">Contact</button>
+        <button type="button" data-section="albums">Album releases</button>
+        <button type="button" data-section="film">Film scores</button>
+        <button type="button" data-section="theater">Theater scores</button>
+        <button type="button" data-section="install">Art installation scores</button>
+        <button type="button" data-section="about">About</button>
+        <button type="button" data-section="contact">Contact</button>
       </nav>
 
     </aside>
 
+
+    <!-- RIGHT CONTENT -->
     <main>
       <div id="content"></div>
     </main>
@@ -249,43 +250,56 @@
 
   <script>
 
-    /* VIMEO */
+    /* ============================
+       VIMEO
+       ============================ */
 
-    const vimeo = id => `
-      <div class="vimeo">
+    function vimeo(id) {
+      return `
+        <div class="vimeo">
+          <iframe
+            src="https://player.vimeo.com/video/${id}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479"
+            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+            allowfullscreen>
+          </iframe>
+        </div>
+      `;
+    }
+
+
+    function vimeoLandscape(id) {
+      return `
+        <div class="vimeo landscape">
+          <iframe
+            src="https://player.vimeo.com/video/${id}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479"
+            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+            allowfullscreen>
+          </iframe>
+        </div>
+      `;
+    }
+
+
+    /* ============================
+       SOUNDCLOUD
+       ============================ */
+
+    function soundcloud(url, cls) {
+      return `
         <iframe
-          src="https://player.vimeo.com/video/${id}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479"
-          allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
-          allowfullscreen>
+          class="${cls}"
+          scrolling="no"
+          frameborder="no"
+          allow="autoplay; encrypted-media"
+          src="${url}">
         </iframe>
-      </div>
-    `;
-
-    const vimeoLandscape = id => `
-      <div class="vimeo landscape">
-        <iframe
-          src="https://player.vimeo.com/video/${id}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479"
-          allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
-          allowfullscreen>
-        </iframe>
-      </div>
-    `;
+      `;
+    }
 
 
-    /* SOUNDCLOUD */
-
-    const soundcloud = (url, cls) => `
-      <iframe
-        class="${cls}"
-        scrolling="no"
-        frameborder="no"
-        allow="autoplay; encrypted-media"
-        src="${url}">
-      </iframe>
-    `;
-
-
-    /* PASSWORDS */
+    /* ============================
+       PASSWORDS
+       ============================ */
 
     const passwords = {
       theater: "nth2025",
@@ -294,16 +308,19 @@
     };
 
 
-    /* PASSWORD GATE */
+    /* ============================
+       PASSWORD GATE
+       ============================ */
 
-    const gate = (key, playerHtml) => {
+    function gate(key, videos) {
 
       if (sessionStorage.getItem("mkvelsorf-" + key) === "ok") {
-        return playerHtml;
+        return videos;
       }
 
       return `
         <div class="film-gate" data-gate="${key}">
+
           <form>
             <input
               type="password"
@@ -311,25 +328,33 @@
               aria-label="Password"
               required
             >
+
             <button type="submit">Enter</button>
           </form>
 
           <div class="gate-error" aria-live="polite"></div>
+
         </div>
       `;
-    };
+    }
 
 
-    /* PASSWORD UNDER EACH VIDEO */
+    /* ============================
+       PASSWORD LABEL
+       ============================ */
 
-    const filmPassword = key => `
-      <div class="film-password">
-        pw: ${passwords[key]}
-      </div>
-    `;
+    function passwordLabel(key) {
+      return `
+        <div class="film-password">
+          pw: ${passwords[key]}
+        </div>
+      `;
+    }
 
 
-    /* THEATER FILM VIDEOS */
+    /* ============================
+       FILM VIDEOS
+       ============================ */
 
     const theaterVideos = [
       "1123734833",
@@ -337,183 +362,203 @@
       "1123736991",
       "1123076674",
       "1123079519"
-    ].map(id => {
-      return vimeo(id) + filmPassword("theater");
+    ].map(function(id) {
+      return vimeo(id) + passwordLabel("theater");
     }).join("");
 
-
-    /* PARADISE FILM VIDEOS */
 
     const paradiseVideos = [
       "775045266",
       "775050707",
       "775059208",
       "775063902"
-    ].map(id => {
-      return vimeo(id) + filmPassword("paradise");
+    ].map(function(id) {
+      return vimeo(id) + passwordLabel("paradise");
     }).join("");
 
 
-    /* SECTIONS */
+    /* ============================
+       SECTIONS
+       ============================ */
 
     const sections = {
 
-      albums: () => `
-        <div class="album-grid">
+      albums: function() {
+        return `
+          <div class="album-grid">
 
-          <div class="item">
-            <iframe
-              style="border:0;width:350px;height:786px;"
-              src="https://bandcamp.com/EmbeddedPlayer/album=629911427/size=large/bgcol=ffffff/linkcol=333333/transparent=true/"
-              seamless>
-            </iframe>
+            <div class="item">
+              <iframe
+                style="border:0;width:350px;height:786px;"
+                src="https://bandcamp.com/EmbeddedPlayer/album=629911427/size=large/bgcol=ffffff/linkcol=333333/transparent=true/"
+                seamless>
+              </iframe>
+            </div>
+
+            <div class="item">
+              <iframe
+                style="border:0;width:350px;height:786px;"
+                src="https://bandcamp.com/EmbeddedPlayer/album=2019934638/size=large/bgcol=ffffff/linkcol=333333/transparent=true/"
+                seamless>
+              </iframe>
+            </div>
+
+            <div class="item">
+              <iframe
+                style="border:0;width:350px;height:654px;"
+                src="https://bandcamp.com/EmbeddedPlayer/album=1344477240/size=large/bgcol=ffffff/linkcol=333333/transparent=true/"
+                seamless>
+              </iframe>
+            </div>
+
+          </div>
+        `;
+      },
+
+
+      film: function() {
+        return `
+          <div class="film-title">
+            Calla Henkel & Max Pitegoff: THEATER, 2025
+          </div>
+
+          ${gate("theater", theaterVideos)}
+
+          <div class="film-gap"></div>
+
+          <div class="film-title">
+            Calla Henkel & Max Pitegoff: Paradise, 2022
+          </div>
+
+          ${gate("paradise", paradiseVideos)}
+        `;
+      },
+
+
+      theater: function() {
+        return `
+          <div class="theater-credit">
+            Vermont, India dir. Michael Herwitz, New Theater Hollywood, 2026
           </div>
 
           <div class="item">
-            <iframe
-              style="border:0;width:350px;height:786px;"
-              src="https://bandcamp.com/EmbeddedPlayer/album=2019934638/size=large/bgcol=ffffff/linkcol=333333/transparent=true/"
-              seamless>
-            </iframe>
+            ${soundcloud(
+              "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%3Aplaylists%3A2291689284%3Fsecret_token%3Ds-Sxzg6dgTxEL&color=%231c181a&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true",
+              "sc450"
+            )}
+          </div>
+
+          <div class="theater-gap"></div>
+
+          <div class="theater-credit">
+            The End Is New, dir. Calla Henkel & Max Pitegoff, RedCat, Los Angeles, 2025
+          </div>
+
+          ${gate(
+            "endisnew",
+            vimeoLandscape("1151391936") +
+            passwordLabel("endisnew")
+          )}
+        `;
+      },
+
+
+      install: function() {
+        return `
+          <div class="theater-credit">
+            Vejen, Nina Beier, permanent installation, New Aalborg University Hospital, 2026
           </div>
 
           <div class="item">
-            <iframe
-              style="border:0;width:350px;height:654px;"
-              src="https://bandcamp.com/EmbeddedPlayer/album=1344477240/size=large/bgcol=ffffff/linkcol=333333/transparent=true/"
-              seamless>
-            </iframe>
+            ${soundcloud(
+              "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%3Atracks%3A2314642574%3Fsecret_token%3Ds-2LIi9pnM8Qu&color=%231c181a&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true",
+              "sc166"
+            )}
           </div>
 
-        </div>
-      `,
-
-
-      film: () => `
-        <div class="film-title">
-          Calla Henkel & Max Pitegoff: THEATER, 2025
-        </div>
-
-        ${gate("theater", theaterVideos)}
-
-        <div class="film-gap"></div>
-
-        <div class="film-title">
-          Calla Henkel & Max Pitegoff: Paradise, 2022
-        </div>
-
-        ${gate("paradise", paradiseVideos)}
-      `,
-
-
-      theater: () => `
-        <div class="theater-credit">
-          Vermont, India dir. Michael Herwitz, New Theater Hollywood, 2026
-        </div>
-
-        <div class="item">
-          ${soundcloud(
-            "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%3Aplaylists%3A2291689284%3Fsecret_token%3Ds-Sxzg6dgTxEL&color=%231c181a&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true",
-            "sc450"
-          )}
-        </div>
-
-        <div class="theater-gap"></div>
-
-        <div class="theater-credit">
-          The End Is New, dir. Calla Henkel & Max Pitegoff, RedCat, Los Angeles, 2025
-        </div>
-
-        ${gate(
-          "endisnew",
-          vimeoLandscape("1151391936") + filmPassword("endisnew")
-        )}
-      `,
-
-
-      install: () => `
-        <div class="theater-credit">
-          Vejen, Nina Beier, permanent installation, New Aalborg University Hospital, 2026
-        </div>
-
-        <div class="item">
-          ${soundcloud(
-            "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%3Atracks%3A2314642574%3Fsecret_token%3Ds-2LIi9pnM8Qu&color=%231c181a&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true",
-            "sc166"
-          )}
-        </div>
-
-        <div class="theater-credit">
-          powerhouse, Nile Koetting, Galerie für Gegenwartskunst, Freiburg, 2025
-        </div>
-
-        <div class="item">
-          ${soundcloud(
-            "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%3Atracks%3A2222266889%3Fsecret_token%3Ds-gFd0FW6YoeJ&color=%232f2a36&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true",
-            "sc166"
-          )}
-        </div>
-      `,
-
-
-      about: () => `
-        <div class="text">
-          MK Velsorf (b. 1991) is a guitarist and composer based in Los Angeles.
-          He is educated from Malmö Art Academy, The Cooper Union School of Art,
-          New York City, and California Institute of the Arts School of Music.
-          He is the music director at New Theater Hollywood.
-        </div>
-      `,
-
-
-      contact: () => `
-        <div class="text contact">
-
-          <div class="contact-line">
-            <a href="mailto:mk@newtheaterhollywood.com">
-              mk@newtheaterhollywood.com
-            </a>
+          <div class="theater-credit">
+            powerhouse, Nile Koetting, Galerie für Gegenwartskunst, Freiburg, 2025
           </div>
 
-          <div class="contact-line">
-            <a
-              href="https://www.instagram.com/mkvelsorf/?hl=en"
-              target="_blank"
-              rel="noopener noreferrer">
-              @mkvelsorf
-            </a>
+          <div class="item">
+            ${soundcloud(
+              "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%3Atracks%3A2222266889%3Fsecret_token%3Ds-gFd0FW6YoeJ&color=%232f2a36&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true",
+              "sc166"
+            )}
           </div>
+        `;
+      },
 
-        </div>
-      `
+
+      about: function() {
+        return `
+          <div class="text">
+            MK Velsorf (b. 1991) is a guitarist and composer based in Los Angeles.
+            He is educated from Malmö Art Academy, The Cooper Union School of Art,
+            New York City, and California Institute of the Arts School of Music.
+            He is the music director at New Theater Hollywood.
+          </div>
+        `;
+      },
+
+
+      contact: function() {
+        return `
+          <div class="text contact">
+
+            <div class="contact-line">
+              <a href="mailto:mk@newtheaterhollywood.com">
+                mk@newtheaterhollywood.com
+              </a>
+            </div>
+
+            <div class="contact-line">
+              <a
+                href="https://www.instagram.com/mkvelsorf/?hl=en"
+                target="_blank"
+                rel="noopener noreferrer">
+                @mkvelsorf
+              </a>
+            </div>
+
+          </div>
+        `;
+      }
+
     };
 
 
-    /* CONTENT */
+    /* ============================
+       RENDER
+       ============================ */
 
     const content = document.getElementById("content");
 
 
-    function renderSection(name) {
-      content.innerHTML = sections[name]();
-      bindGates();
+    function renderSection(sectionName) {
+      content.innerHTML = sections[sectionName]();
+      bindPasswordForms();
     }
 
 
-    /* PASSWORD FORM */
+    /* ============================
+       PASSWORD SUBMISSION
+       ============================ */
 
-    function bindGates() {
+    function bindPasswordForms() {
 
-      content.querySelectorAll(".film-gate form").forEach(form => {
+      const forms = content.querySelectorAll(".film-gate form");
 
-        form.addEventListener("submit", event => {
+      forms.forEach(function(form) {
+
+        form.addEventListener("submit", function(event) {
 
           event.preventDefault();
 
-          const gateEl = form.closest(".film-gate");
-          const key = gateEl.dataset.gate;
+          const gateElement = form.closest(".film-gate");
+          const key = gateElement.dataset.gate;
           const input = form.querySelector("input");
-          const error = gateEl.querySelector(".gate-error");
+          const error = gateElement.querySelector(".gate-error");
 
           if (input.value.trim() === passwords[key]) {
 
@@ -522,17 +567,11 @@
               "ok"
             );
 
-            /*
-              Re-render the currently selected section.
-              This replaces the password form with the videos.
-            */
-
-            const activeButton = document.querySelector(
-              "nav button.active"
-            );
+            const activeButton =
+              document.querySelector("nav button.active");
 
             if (activeButton) {
-              renderSection(activeButton.dataset.s);
+              renderSection(activeButton.dataset.section);
             }
 
           } else {
@@ -549,19 +588,23 @@
     }
 
 
-    /* NAVIGATION */
+    /* ============================
+       MENU
+       ============================ */
 
-    document.querySelectorAll("nav button").forEach(button => {
+    document.querySelectorAll("nav button").forEach(function(button) {
 
-      button.addEventListener("click", () => {
+      button.addEventListener("click", function() {
 
-        document.querySelectorAll("nav button").forEach(b => {
-          b.classList.remove("active");
-        });
+        document
+          .querySelectorAll("nav button")
+          .forEach(function(otherButton) {
+            otherButton.classList.remove("active");
+          });
 
         button.classList.add("active");
 
-        renderSection(button.dataset.s);
+        renderSection(button.dataset.section);
 
       });
 
@@ -569,11 +612,10 @@
 
 
     /*
-      IMPORTANT:
-      Nothing is rendered here.
+      NO SECTION IS RENDERED HERE.
 
-      The landing page intentionally starts blank
-      except for the menu on the left.
+      The landing page is intentionally blank
+      on the right side.
     */
 
   </script>
