@@ -1,3 +1,4 @@
+```html
 <!doctype html>
 <html lang="en">
 <head>
@@ -217,6 +218,7 @@
     }
 
     @media (max-width: 700px) {
+
       .layout {
         display: block;
       }
@@ -254,6 +256,7 @@
         flex-direction: column;
         gap: 28px;
       }
+
     }
   </style>
 </head>
@@ -364,7 +367,8 @@
 
               <div class="contact-line">
 
-                <a href="mailto:mk@newtheaterhollywood.com">
+                <a
+                  href="mailto:mk@newtheaterhollywood.com">
 
                   mk@newtheaterhollywood.com
 
@@ -479,23 +483,19 @@
     };
 
 
-    function passwordLabel(key) {
-
-      return `
-        <div class="film-password">
-
-          pw: ${passwords[key]}
-
-        </div>
-      `;
-
-    }
-
+    /* ---------------------------------
+       PASSWORD GATES
+    --------------------------------- */
 
     function gate(key, videos) {
 
+      /*
+        If the password has already been
+        entered successfully, show all videos.
+      */
+
       if (
-        sessionStorage.getItem(
+        localStorage.getItem(
           "mkvelsorf-" + key
         ) === "ok"
       ) {
@@ -503,6 +503,11 @@
         return videos;
 
       }
+
+
+      /*
+        Otherwise show the password field.
+      */
 
       return `
         <div
@@ -522,10 +527,6 @@
             </button>
 
           </form>
-
-          <div class="film-password">
-            pw: ${passwords[key]}
-          </div>
 
           <div
             class="gate-error"
@@ -552,10 +553,7 @@
 
     ].map(function(id) {
 
-      return (
-        vimeo(id) +
-        passwordLabel("theater")
-      );
+      return vimeo(id);
 
     }).join("");
 
@@ -573,10 +571,7 @@
 
     ].map(function(id) {
 
-      return (
-        vimeo(id) +
-        passwordLabel("paradise")
-      );
+      return vimeo(id);
 
     }).join("");
 
@@ -586,6 +581,10 @@
     --------------------------------- */
 
     const sections = {
+
+      /* ---------------------------------
+         ALBUM RELEASES
+      --------------------------------- */
 
       albums: function() {
 
@@ -603,6 +602,7 @@
 
             </div>
 
+
             <div class="item">
 
               <iframe
@@ -612,6 +612,7 @@
               </iframe>
 
             </div>
+
 
             <div class="item">
 
@@ -630,6 +631,10 @@
       },
 
 
+      /* ---------------------------------
+         FILM SCORES
+      --------------------------------- */
+
       film: function() {
 
         return `
@@ -640,18 +645,22 @@
 
           </div>
 
+
           ${gate(
             "theater",
             theaterVideos
           )}
 
+
           <div class="film-gap"></div>
+
 
           <div class="film-title">
 
             Calla Henkel & Max Pitegoff: Paradise, 2022
 
           </div>
+
 
           ${gate(
             "paradise",
@@ -663,6 +672,10 @@
       },
 
 
+      /* ---------------------------------
+         THEATER SCORES
+      --------------------------------- */
+
       theater: function() {
 
         return `
@@ -673,6 +686,7 @@
             New Theater Hollywood, 2026
 
           </div>
+
 
           <div class="item">
 
@@ -686,7 +700,9 @@
 
           </div>
 
+
           <div class="theater-gap"></div>
+
 
           <div class="theater-credit">
 
@@ -695,12 +711,12 @@
 
           </div>
 
+
           ${gate(
 
             "endisnew",
 
-            vimeoLandscape("1151391936") +
-            passwordLabel("endisnew")
+            vimeoLandscape("1151391936")
 
           )}
 
@@ -708,6 +724,10 @@
 
       },
 
+
+      /* ---------------------------------
+         ART INSTALLATION SCORES
+      --------------------------------- */
 
       install: function() {
 
@@ -719,6 +739,7 @@
             New Aalborg University Hospital, 2026
 
           </div>
+
 
           <div class="item">
 
@@ -732,12 +753,14 @@
 
           </div>
 
+
           <div class="theater-credit">
 
             powerhouse, Nile Koetting,
             Galerie für Gegenwartskunst, Freiburg, 2025
 
           </div>
+
 
           <div class="item">
 
@@ -769,11 +792,15 @@
     function renderSection(sectionName) {
 
       if (!sections[sectionName]) {
+
         return;
+
       }
+
 
       content.innerHTML =
         sections[sectionName]();
+
 
       bindPasswordForms();
 
@@ -786,12 +813,16 @@
 
     function goHome() {
 
-      /* Clear main content */
+      /*
+        Clear main content.
+      */
 
       content.innerHTML = "";
 
 
-      /* Remove active section */
+      /*
+        Remove active section.
+      */
 
       document
         .querySelectorAll(
@@ -806,7 +837,9 @@
         });
 
 
-      /* Close all dropdowns */
+      /*
+        Close all dropdowns.
+      */
 
       document
         .querySelectorAll(
@@ -821,7 +854,9 @@
         });
 
 
-      /* Reset dropdown accessibility state */
+      /*
+        Reset dropdown accessibility state.
+      */
 
       document
         .querySelectorAll(
@@ -878,16 +913,32 @@
               );
 
 
+            /*
+              Check the password.
+            */
+
             if (
               input.value.trim() ===
               passwords[key]
             ) {
 
-              sessionStorage.setItem(
+              /*
+                Save the successful login
+                permanently in this browser.
+              */
+
+              localStorage.setItem(
                 "mkvelsorf-" + key,
                 "ok"
               );
 
+
+              /*
+                Reload the current section.
+
+                The password gate will now
+                automatically return all videos.
+              */
 
               const activeButton =
                 document.querySelector(
@@ -934,7 +985,9 @@
           "click",
           function() {
 
-            /* Update active state */
+            /*
+              Update active state.
+            */
 
             document
               .querySelectorAll(
@@ -954,7 +1007,9 @@
             );
 
 
-            /* Load section */
+            /*
+              Load section.
+            */
 
             renderSection(
               button.dataset.section
@@ -996,9 +1051,6 @@
 
             /*
               Toggle only this dropdown.
-
-              The other dropdown remains
-              exactly as it is.
             */
 
             if (isOpen) {
@@ -1080,3 +1132,4 @@
 
 </body>
 </html>
+```
