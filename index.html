@@ -153,7 +153,8 @@
 
     .film-title,
     .film-password,
-    .theater-credit {
+    .theater-credit,
+    .episode-title {
       font-size: 16px;
       margin: 0 0 16px;
     }
@@ -163,7 +164,7 @@
     }
 
     .theater-gap {
-      height: 5cm;
+      height: 2.5cm;
     }
 
     .text {
@@ -300,10 +301,10 @@
 
             <div class="text">
 
-              MK Velsorf (b. Silkeborg, Denmark, 1991) is a guitarist and composer based in Los Angeles.
-              He is educated at Malmö Art Academy, The Cooper Union School of Art,
+              MK Velsorf (b. 1991) is a guitarist and composer based in Los Angeles.
+              He is educated from Malmö Art Academy, The Cooper Union School of Art,
               New York City, and California Institute of the Arts School of Music.
-              He is music director at New Theater Hollywood.
+              He is the music director at New Theater Hollywood.
 
             </div>
 
@@ -464,6 +465,7 @@
 
     /* ---------------------------------
        THEATER VIDEOS
+       EPISODES 1–5
     --------------------------------- */
 
     const theaterVideos = [
@@ -474,18 +476,28 @@
       "1123076674",
       "1123079519"
 
-    ].map(function(id) {
+    ].map(function(id, index) {
 
-      return (
-        vimeo(id) +
-        passwordLabel("theater")
-      );
+      return `
+
+        <div class="episode-title">
+
+          Episode ${index + 1}
+
+        </div>
+
+        ${vimeo(id)}
+
+        ${passwordLabel("theater")}
+
+      `;
 
     }).join("");
 
 
     /* ---------------------------------
        PARADISE VIDEOS
+       EPISODES 1–4
     --------------------------------- */
 
     const paradiseVideos = [
@@ -495,12 +507,21 @@
       "775059208",
       "775063902"
 
-    ].map(function(id) {
+    ].map(function(id, index) {
 
-      return (
-        vimeo(id) +
-        passwordLabel("paradise")
-      );
+      return `
+
+        <div class="episode-title">
+
+          Episode ${index + 1}
+
+        </div>
+
+        ${vimeo(id)}
+
+        ${passwordLabel("paradise")}
+
+      `;
 
     }).join("");
 
