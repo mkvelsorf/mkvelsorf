@@ -4,7 +4,6 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <title>MK Velsorf</title>
 
   <style>
@@ -273,22 +272,32 @@
       </iframe>
     `;
 
-    const gate = (key, playerHtml) =>
-      sessionStorage.getItem("mkvelsorf-" + key) === "ok"
-        ? playerHtml
-        : `
-          <div class="film-gate" data-gate="${key}">
-            <form>
-              <input
-                type="password"
-                placeholder="Password"
-                aria-label="Password"
-              >
-              <button type="submit">Enter</button>
-            </form>
-            <div class="gate-error" aria-live="polite"></div>
-          </div>
-        `;
+    const passwords = {
+      theater: "nth2025",
+      paradise: "chmparadise22#ep",
+      endisnew: "pooltheater5"
+    };
+
+    const gate = (key, playerHtml) => {
+      if (sessionStorage.getItem("mkvelsorf-" + key) === "ok") {
+        return playerHtml;
+      }
+
+      return `
+        <div class="film-gate" data-gate="${key}">
+          <form>
+            <input
+              type="password"
+              placeholder="Password"
+              aria-label="Password"
+              required
+            >
+            <button type="submit">Enter</button>
+          </form>
+          <div class="gate-error" aria-live="polite"></div>
+        </div>
+      `;
+    };
 
     const theaterVideos = [
       "1123734833",
@@ -304,12 +313,6 @@
       "775059208",
       "775063902"
     ].map(vimeo).join("");
-
-    const passwords = {
-      theater: "nth2025",
-      paradise: "chmparadise22#ep",
-      endisnew: "pooltheater5"
-    };
 
     const sections = {
       albums: () => `
@@ -434,18 +437,20 @@
           const gateEl = form.closest(".film-gate");
           const key = gateEl.dataset.gate;
           const input = form.querySelector("input");
+          const error = gateEl.querySelector(".gate-error");
 
           if (input.value === passwords[key]) {
             sessionStorage.setItem("mkvelsorf-" + key, "ok");
 
-            const active = document.querySelector("nav button.active");
+            const activeButton = document.querySelector(
+              "nav button.active"
+            );
 
-            if (active) {
-              renderSection(active.dataset.s);
+            if (activeButton) {
+              renderSection(activeButton.dataset.s);
             }
           } else {
-            gateEl.querySelector(".gate-error").textContent =
-              "Incorrect password";
+            error.textContent = "Incorrect password";
             input.select();
           }
         });
