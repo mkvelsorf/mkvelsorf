@@ -1,5 +1,4 @@
 <!doctype html>
-
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -99,7 +98,7 @@
       width: 100%;
       max-width: 900px;
       aspect-ratio: 4 / 3;
-      margin-bottom: 16px;
+      margin-bottom: 8px;
     }
 
     .vimeo.landscape {
@@ -220,7 +219,6 @@
       }
     }
   </style>
-
 </head>
 
 <body>
@@ -228,6 +226,7 @@
   <div class="layout">
 
     <aside class="sidebar">
+
       <div class="name">MK Velsorf</div>
 
       <nav>
@@ -238,6 +237,7 @@
         <button data-s="about">About</button>
         <button data-s="contact">Contact</button>
       </nav>
+
     </aside>
 
     <main>
@@ -246,7 +246,10 @@
 
   </div>
 
+
   <script>
+
+    /* VIMEO */
 
     const vimeo = id => `
       <div class="vimeo">
@@ -268,6 +271,9 @@
       </div>
     `;
 
+
+    /* SOUNDCLOUD */
+
     const soundcloud = (url, cls) => `
       <iframe
         class="${cls}"
@@ -278,13 +284,20 @@
       </iframe>
     `;
 
+
+    /* PASSWORDS */
+
     const passwords = {
       theater: "nth2025",
       paradise: "chmparadise22#ep",
       endisnew: "pooltheater5"
     };
 
+
+    /* PASSWORD GATE */
+
     const gate = (key, playerHtml) => {
+
       if (sessionStorage.getItem("mkvelsorf-" + key) === "ok") {
         return playerHtml;
       }
@@ -300,17 +313,23 @@
             >
             <button type="submit">Enter</button>
           </form>
+
           <div class="gate-error" aria-live="polite"></div>
         </div>
       `;
     };
 
 
-    /*
-      FILM SCORES
+    /* PASSWORD UNDER EACH VIDEO */
 
-      Each video now has its password directly underneath it.
-    */
+    const filmPassword = key => `
+      <div class="film-password">
+        pw: ${passwords[key]}
+      </div>
+    `;
+
+
+    /* THEATER FILM VIDEOS */
 
     const theaterVideos = [
       "1123734833",
@@ -318,22 +337,24 @@
       "1123736991",
       "1123076674",
       "1123079519"
-    ].map(id => `
-      ${vimeo(id)}
-      <div class="film-password">pw: nth2025</div>
-    `).join("");
+    ].map(id => {
+      return vimeo(id) + filmPassword("theater");
+    }).join("");
 
+
+    /* PARADISE FILM VIDEOS */
 
     const paradiseVideos = [
       "775045266",
       "775050707",
       "775059208",
       "775063902"
-    ].map(id => `
-      ${vimeo(id)}
-      <div class="film-password">pw: chmparadise22#ep</div>
-    `).join("");
+    ].map(id => {
+      return vimeo(id) + filmPassword("paradise");
+    }).join("");
 
+
+    /* SECTIONS */
 
     const sections = {
 
@@ -405,8 +426,7 @@
 
         ${gate(
           "endisnew",
-          vimeoLandscape("1151391936") +
-          '<div class="film-password">pw: pooltheater5</div>'
+          vimeoLandscape("1151391936") + filmPassword("endisnew")
         )}
       `,
 
@@ -469,6 +489,8 @@
     };
 
 
+    /* CONTENT */
+
     const content = document.getElementById("content");
 
 
@@ -477,6 +499,8 @@
       bindGates();
     }
 
+
+    /* PASSWORD FORM */
 
     function bindGates() {
 
@@ -497,6 +521,11 @@
               "mkvelsorf-" + key,
               "ok"
             );
+
+            /*
+              Re-render the currently selected section.
+              This replaces the password form with the videos.
+            */
 
             const activeButton = document.querySelector(
               "nav button.active"
@@ -520,6 +549,8 @@
     }
 
 
+    /* NAVIGATION */
+
     document.querySelectorAll("nav button").forEach(button => {
 
       button.addEventListener("click", () => {
@@ -535,6 +566,15 @@
       });
 
     });
+
+
+    /*
+      IMPORTANT:
+      Nothing is rendered here.
+
+      The landing page intentionally starts blank
+      except for the menu on the left.
+    */
 
   </script>
 
