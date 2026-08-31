@@ -217,7 +217,6 @@
     }
 
     @media (max-width: 700px) {
-
       .layout {
         display: block;
       }
@@ -481,34 +480,17 @@
 
 
     /* ---------------------------------
-       PASSWORD LABEL
-    --------------------------------- */
-
-    function passwordLabel(key) {
-
-      return `
-        <div class="film-password">
-
-          pw: ${passwords[key]}
-
-        </div>
-      `;
-
-    }
-
-
-    /* ---------------------------------
        PASSWORD GATE
     --------------------------------- */
 
     function gate(key, videos) {
 
       /*
-        If the password has already been
-        entered successfully, show all videos.
+        One successful password entry unlocks
+        the entire collection.
 
-        localStorage means this remains unlocked
-        even after closing and reopening the browser.
+        localStorage keeps the unlock after
+        refreshing or reopening the browser.
       */
 
       if (
@@ -522,11 +504,6 @@
       }
 
 
-      /*
-        Otherwise show the password field
-        and the visible password.
-      */
-
       return `
         <div
           class="film-gate"
@@ -538,6 +515,7 @@
               type="password"
               placeholder="Password"
               aria-label="Password"
+              autocomplete="off"
               required>
 
             <button type="submit">
@@ -565,6 +543,7 @@
 
     /* ---------------------------------
        THEATER VIDEOS
+       ONE PASSWORD UNLOCKS ALL FIVE
     --------------------------------- */
 
     const theaterVideos = [
@@ -584,6 +563,7 @@
 
     /* ---------------------------------
        PARADISE VIDEOS
+       ONE PASSWORD UNLOCKS ALL FOUR
     --------------------------------- */
 
     const paradiseVideos = [
@@ -605,6 +585,10 @@
     --------------------------------- */
 
     const sections = {
+
+      /* ---------------------------------
+         ALBUM RELEASES
+      --------------------------------- */
 
       albums: function() {
 
@@ -649,6 +633,10 @@
       },
 
 
+      /* ---------------------------------
+         FILM SCORES
+      --------------------------------- */
+
       film: function() {
 
         return `
@@ -681,6 +669,10 @@
 
       },
 
+
+      /* ---------------------------------
+         THEATER SCORES
+      --------------------------------- */
 
       theater: function() {
 
@@ -715,17 +707,18 @@
           </div>
 
           ${gate(
-
             "endisnew",
-
             vimeoLandscape("1151391936")
-
           )}
 
         `;
 
       },
 
+
+      /* ---------------------------------
+         ART INSTALLATION SCORES
+      --------------------------------- */
 
       install: function() {
 
@@ -891,22 +884,20 @@
 
 
             /*
-              Check password.
+              Check the password.
             */
 
             if (
-              input.value.trim() ===
+              input.value ===
               passwords[key]
             ) {
 
               /*
-                Save permanently.
+                Store the unlock.
 
-                For THEATER this unlocks
-                all five THEATER videos.
-
-                For PARADISE this unlocks
-                all four PARADISE videos.
+                THEATER = all five videos
+                PARADISE = all four videos
+                END IS NEW = its video
               */
 
               localStorage.setItem(
@@ -916,7 +907,8 @@
 
 
               /*
-                Reload the current section.
+                Re-render the current section.
+                The gate will now be gone.
               */
 
               const activeButton =
@@ -1085,11 +1077,6 @@
       }
 
     );
-
-
-    /*
-      Page starts with only the menu.
-    */
 
   </script>
 
